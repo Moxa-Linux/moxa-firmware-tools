@@ -1,5 +1,5 @@
 #!/bin/bash
 
-fw_setenv flag default
+fw_setenv overlay_flag default
 reboot
 

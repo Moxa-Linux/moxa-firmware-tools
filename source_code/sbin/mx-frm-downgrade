@@ -18,18 +18,18 @@ cp -ar /overlayfs/v1 /overlayfs/backup
 
 # S2
 sync
-fw_setenv flag v1backup
+fw_setenv overlay_flag v1backup
 
 # S3
 downgrade
 sync
-fw_setenv flag v0
+fw_setenv overlay_flag v0
 
 # S4
 rm -rf /overlayfs/v0
 cp -ar /overlayfs/backup /overlayfs/v0
 sync
-fw_setenv flag v1d
+fw_setenv overlay_flag v1d
 
 # S5
 reboot

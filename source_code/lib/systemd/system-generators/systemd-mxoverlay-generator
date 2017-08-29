@@ -4,9 +4,9 @@ touch /tmp/.overlay.lock
 #date >> /home/moxa/test
 
 # get flag from spi flash
-eval "$(fw_printenv|grep flag)"
+eval "$(fw_printenv|grep overlay_flag)"
 
-if [ x"$flag" == x"debug" ]; then
+if [ x"$overlay_flag" == x"debug" ]; then
 	exit
 fi
 
@@ -16,61 +16,61 @@ fi
 #fi
 
 # ----- flag=v1backup -----
-if [ x"$flag" == x"v1backup" ]; then
+if [ x"$overlay_flag" == x"v1backup" ]; then
 	rm -rf /overlayfs/v1
 	cp -ar /overlayfs/backup /overlayfs/v1
 	sync
-	fw_setenv flag v1
+	fw_setenv overlay_flag v1
 	echo "upgrade failed" > /dev/ttyS0
 	reboot
 	exit
 fi
 
 # ----- flag=v0 -----
-if [ x"$flag" == x"v0" ]; then
+if [ x"$overlay_flag" == x"v0" ]; then
 	echo "restore downgrade status" > /dev/ttyS0
 	rm -rf /overlayfs/v0
 	cp -ar /overlayfs/backup /overlayfs/v0
 	sync
-	fw_setenv flag v1d
+	fw_setenv overlay_flag v1d
 	reboot
 	exit
 fi
 
 # ----- flag=v3 -----
-if [ x"$flag" == x"v3" ]; then
+if [ x"$overlay_flag" == x"v3" ]; then
 	echo "restore upgrade status" > /dev/ttyS0
 	rm -rf /overlayfs/v0
 	cp -ar /overlayfs/backup /overlayfs/v0
 	sync
-	fw_setenv flag v1u
+	fw_setenv overlay_flag v1u
 	reboot
 	exit
 fi
 
 # ----- flag=v1u -----
-if [ x"$flag" == x"v1u" ]; then
+if [ x"$overlay_flag" == x"v1u" ]; then
 	rm -rf /overlayfs/backup
 	sync
 	echo "upgrade successful" > /dev/ttyS0
-	fw_setenv flag v1
+	fw_setenv overlay_flag v1
 fi
 
 # ----- flag=v1d -----
-if [ x"$flag" == x"v1d" ]; then
+if [ x"$overlay_flag" == x"v1d" ]; then
 	rm -rf /overlayfs/backup
 	sync
 	echo "downgrade successful" > /dev/ttyS0
-	fw_setenv flag v1
+	fw_setenv overlay_flag v1
 fi
 
 # ----- flag=default -----
-if [ x"$flag" == x"default" ]; then
+if [ x"$overlay_flag" == x"default" ]; then
 	rm -rf /overlayfs/v1
 	cp -ar /overlayfs/default /overlayfs/v1
 	sync
 	echo "set to default successful" > /dev/ttyS0
-	fw_setenv flag v1
+	fw_setenv overlay_flag v1
 fi
 
 rm -rf /tmp/.overlay.lock
