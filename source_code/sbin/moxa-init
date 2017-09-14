@@ -1,7 +1,8 @@
 #!/bin/bash
 
+READFILE="/etc/moxa-configs/moxa-set-default.conf"
+
 touch /tmp/.overlay.lock
-#date >> /home/moxa/test
 
 # get flag from spi flash
 eval "$(fw_printenv|grep overlay_flag)"
@@ -74,3 +75,14 @@ if [ x"$overlay_flag" == x"default" ]; then
 fi
 
 rm -rf /tmp/.overlay.lock
+
+# ----- Run overlayfs -----
+while read DIR; do
+	if [ x"${DIR:0:1}" != x"#" ]&&[ x"${DIR:0:1}" != x"" ] ; then
+		/sbin/mx-overlay $DIR
+	fi
+done < $READFILE
+
+# ----- Execute systemd -----
+exec /lib/systemd/systemd $@
+
