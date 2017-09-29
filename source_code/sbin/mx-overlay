@@ -1,18 +1,10 @@
 #!/bin/bash
+
+# get overlay DIR
 DIR="$1"
-#echo "$(date) $DIR" >> /home/moxa/test
+
 # get flag from spi flash
 eval "$(fw_printenv|grep overlay_flag)"
-
-while [ -f /tmp/.overlay.lock ]
-do
-	sleep 0.1
-done
-
-#if [ x"$overlay_flag" != x"v1" ] && [ x"$DIR" == x"/overlayfs" ]; then
-if [ x"$overlay_flag" != x"v1" ]; then
-	exit
-fi
 
 # ----- flag=v1 -----
 if [ x"$overlay_flag" == x"v1" ]; then
@@ -28,4 +20,6 @@ if [ x"$overlay_flag" == x"v1" ]; then
 	
 	OPTS="-o lowerdir=${DIR},upperdir=/overlayfs/v1/${DIR}_rw/upper,workdir=/overlayfs/v1/${DIR}_rw/work"
 	/bin/mount -t overlay ${OPTS} overlay ${DIR}
+else
+	exit
 fi
