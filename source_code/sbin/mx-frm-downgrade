@@ -1,15 +1,8 @@
 #!/bin/bash
 
 downgrade(){
-	#for((i=1; i<=100; i++))
-	#do
-	#	dd if=/dev/zero of=/home/moxa/tmp/${i} bs=512k count=1
-	#	sync
-	#done
-	#rm -rf /home/moxa/tmp/*
-	#version=$(cat /home/moxa/version)
-	#let version--
-	#echo $version > /home/moxa/version
+	rm -rf /overlayfs/v1
+	cp -ar /overlayfs/v0 /overlayfs/v1
 	sync
 }
 
