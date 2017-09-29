@@ -7,15 +7,13 @@ mount -o remount,rw /
 # get flag from spi flash
 eval "$(fw_printenv|grep overlay_flag)"
 
+# Engineer debug mode
 if [ x"$overlay_flag" == x"debug" ]; then
 	exit
 fi
 
-# FIXME
-# ----- mount p3 -----
-#if [ x"$(mount | grep mmcblk0p3)" == x"" ]; then
-	mount /dev/mmcblk0p3 /overlayfs
-#fi
+# mount partition3 to /overlayfs
+mount /dev/mmcblk0p3 /overlayfs
 
 # ----- flag=v1backup -----
 if [ x"$overlay_flag" == x"v1backup" ]; then
