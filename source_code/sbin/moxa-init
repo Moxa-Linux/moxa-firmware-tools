@@ -12,8 +12,13 @@ if [ x"$overlay_flag" == x"debug" ]; then
 	exit
 fi
 
-# mount partition3 to /overlayfs
-mount /dev/mmcblk0p3 /overlayfs
+# Get RFS partition from cmdline. e.g. /dev/mmcblk0p2
+ROOT_PART=$(cat /proc/cmdline)
+ROOT_PART="${ROOT_PART##*root=}"
+ROOT_PART="${ROOT_PART%% *}"
+ROOT_PART="${ROOT_PART%%2}3"
+# mount RFS partition3 to /overlayfs
+mount $ROOT_PART /overlayfs
 
 # ----- flag=v1backup -----
 if [ x"$overlay_flag" == x"v1backup" ]; then
