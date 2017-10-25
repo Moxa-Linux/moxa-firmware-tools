@@ -13,7 +13,8 @@ if [ x"$overlay_flag" == x"debug" ]; then
 fi
 
 # Get RFS partition from cmdline. e.g. /dev/mmcblk0p2
-ROOT_PART=$(cat /proc/cmdline)
+#ROOT_PART=$(cat /proc/cmdline)
+ROOT_PART=$(dmesg | grep "Kernel command line")
 ROOT_PART="${ROOT_PART##*root=}"
 ROOT_PART="${ROOT_PART%% *}"
 ROOT_PART="${ROOT_PART%%2}3"
