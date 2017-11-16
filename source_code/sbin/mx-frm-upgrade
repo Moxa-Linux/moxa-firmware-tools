@@ -1,0 +1,35 @@
+#!/bin/bash
+
+upgrade(){
+	#for((i=1; i<=100; i++))
+	#do
+	#	dd if=/dev/zero of=/home/moxa/tmp/${i} bs=512k count=1
+	#	sync
+	#done
+	#rm -rf /home/moxa/tmp/*
+	#version=$(cat /home/moxa/version)
+	#let version++
+	#echo $version > /home/moxa/version
+	sync
+}
+
+# S1
+cp -ar /overlayfs/v1 /overlayfs/backup
+
+# S2
+sync
+fw_setenv flag v1backup
+
+# S3
+upgrade
+sync
+fw_setenv flag v3
+
+# S4
+rm -rf /overlayfs/v0
+cp -ar /overlayfs/backup /overlayfs/v0
+sync
+fw_setenv flag v1u
+
+# S5
+reboot

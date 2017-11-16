@@ -1,0 +1,5 @@
+#!/bin/bash
+
+fw_setenv flag default
+reboot
+
