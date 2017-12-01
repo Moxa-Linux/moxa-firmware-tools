@@ -9,6 +9,7 @@ eval "$(fw_printenv|grep overlay_flag)"
 
 # Engineer debug mode
 if [ x"$overlay_flag" == x"debug" ]; then
+	exec /lib/systemd/systemd $@
 	exit
 fi
 
