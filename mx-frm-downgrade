@@ -1,5 +1,11 @@
 #!/bin/bash
 
+TMP_RFS_P1=/dev/shm/rfs_p1
+KERNEL_PART=$(dmesg | grep "Kernel command line")
+KERNEL_PART="${KERNEL_PART##*root=}"
+KERNEL_PART="${KERNEL_PART%% *}"
+KERNEL_PART="${KERNEL_PART%%2}1"
+
 downgrade(){
 	rm -rf /overlayfs/v1
 	cp -ar /overlayfs/v0 /overlayfs/v1
@@ -8,6 +14,11 @@ downgrade(){
 
 main(){
 	# S1 state
+	## backup partition 1 kernel
+	mkdir ${TMP_RFS_P1}
+	mount ${KERNEL_PART} ${TMP_RFS_P1}
+	cp -ar ${TMP_RFS_P1}/* /overlayfs/v1/p1/
+	## backup v1
 	cp -ar /overlayfs/v1 /overlayfs/backup
 
 	# S2 state
@@ -20,7 +31,11 @@ main(){
 	fw_setenv overlay_flag v0
 
 	# S4 state
+	## rollback v0 partition 1 kernel
+	mv /overlayfs/v0/p1/* ${TMP_RFS_P1}/
+	umount ${TMP_RFS_P1}
 	rm -rf /overlayfs/v0
+	## rollback v0
 	cp -ar /overlayfs/backup /overlayfs/v0
 	sync
 	fw_setenv overlay_flag v1d
