@@ -1,6 +1,6 @@
 #!/bin/bash
 
-READFILE="/etc/moxa-configs/moxa-set-default.conf"
+READFILE="/etc/moxa-configs/moxa-firmware-tools.conf"
 
 mount -o remount,rw /
 
