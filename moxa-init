@@ -7,6 +7,12 @@ mount -o remount,rw /
 # get flag from spi flash
 eval "$(fw_printenv|grep overlay_flag)"
 
+# check overlay flag is exist or not
+if [ x"$overlay_flag" == x"" ]; then
+        fw_setenv overlay_flag v1
+        $overlay_flag="v1"
+fi
+
 # Engineer debug mode
 if [ x"$overlay_flag" == x"debug" ]; then
 	exec /lib/systemd/systemd $@
