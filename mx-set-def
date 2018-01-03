@@ -2,7 +2,7 @@
 
 TMP_RFS_P1="/dev/shm/rfs_p1"
 
-KERNEL_PART=$(dmesg | grep "Kernel command line")
+KERNEL_PART=$(cat /proc/cmdline)
 KERNEL_PART="${KERNEL_PART##*root=}"
 KERNEL_PART="${KERNEL_PART%% *}"
 KERNEL_PART="${KERNEL_PART%%2}1"
