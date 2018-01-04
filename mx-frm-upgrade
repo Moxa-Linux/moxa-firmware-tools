@@ -15,9 +15,15 @@ main(){
 	# S1 state
 	## backup partition 1 kernel
 	mkdir ${TMP_RFS_P1}
+
+	# if p1 is already mount, umount it.
+	if df -h | grep "${KERNEL_PART}" > /dev/null; then
+		umount ${KERNEL_PART}
+	fi
 	mount ${KERNEL_PART} ${TMP_RFS_P1}
 	cp -ar ${TMP_RFS_P1}/* /overlayfs/v1/p1/
 	umount ${TMP_RFS_P1}
+
 	## backup v1
 	cp -ar /overlayfs/v1 /overlayfs/backup
 
