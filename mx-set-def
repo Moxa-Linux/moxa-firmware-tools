@@ -1,6 +1,7 @@
 #!/bin/bash
 
 TMP_RFS_P1="/dev/shm/rfs_p1"
+OVERLAY_P1="/overlayfs/v1/p1"
 
 KERNEL_PART=$(cat /proc/cmdline)
 KERNEL_PART="${KERNEL_PART##*root=}"
@@ -8,9 +9,11 @@ KERNEL_PART="${KERNEL_PART%% *}"
 KERNEL_PART="${KERNEL_PART%%2}1"
 
 # set to default kernel
-mkdir ${TMP_RFS_P1}
+mkdir -p ${TMP_RFS_P1}
+mkdir -p ${OVERLAY_P1}
+
 mount ${KERNEL_PART} ${TMP_RFS_P1}
-mv /overlayfs/v1/p1/* ${TMP_RFS_P1}/
+mv ${OVERLAY_P1}/* ${TMP_RFS_P1}/
 umount ${KERNEL_PART}
 
 # prepare to set to default root file system

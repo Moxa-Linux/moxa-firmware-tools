@@ -1,6 +1,7 @@
 #!/bin/bash
 
-TMP_RFS_P1=/dev/shm/rfs_p1
+TMP_RFS_P1="/dev/shm/rfs_p1"
+OVERLAY_P1="/overlayfs/v1/p1"
 KERNEL_PART=$(cat /proc/cmdline)
 KERNEL_PART="${KERNEL_PART##*root=}"
 KERNEL_PART="${KERNEL_PART%% *}"
@@ -14,14 +15,15 @@ upgrade(){
 main(){
 	# S1 state
 	## backup partition 1 kernel
-	mkdir ${TMP_RFS_P1}
+	mkdir -p ${TMP_RFS_P1}
+	mkdir -p ${OVERLAY_P1}
 
 	# if p1 is already mount, umount it.
 	if df -h | grep "${KERNEL_PART}" > /dev/null; then
 		umount ${KERNEL_PART}
 	fi
 	mount ${KERNEL_PART} ${TMP_RFS_P1}
-	cp -ar ${TMP_RFS_P1}/* /overlayfs/v1/p1/
+	cp -ar ${TMP_RFS_P1}/* ${OVERLAY_P1}/
 	umount ${TMP_RFS_P1}
 
 	## backup v1
