@@ -12,9 +12,12 @@ KERNEL_PART="${KERNEL_PART%%2}1"
 mkdir -p ${TMP_RFS_P1}
 mkdir -p ${OVERLAY_P1}
 
-mount ${KERNEL_PART} ${TMP_RFS_P1}
-mv ${OVERLAY_P1}/* ${TMP_RFS_P1}/
-umount ${KERNEL_PART}
+# restore p1 if p1 backup files are exist
+if [ -r ${OVERLAY_P1}/* ]; then
+	mount ${KERNEL_PART} ${TMP_RFS_P1}
+	mv ${OVERLAY_P1}/* ${TMP_RFS_P1}/
+	umount ${KERNEL_PART}
+fi
 
 # prepare to set to default root file system
 fw_setenv overlay_flag default
