@@ -38,14 +38,18 @@ if [ x"$overlay_flag" == x"v1backup" ]; then
 	cp -ar /overlayfs/backup /overlayfs/v1
 	sync
 	fw_setenv overlay_flag v1
-	echo "upgrade failed" > /dev/ttyS0
+	echo "******************" > /dev/ttyS0
+	echo "* Upgrade failed *" > /dev/ttyS0
+	echo "******************" > /dev/ttyS0
 	reboot
 	exit
 fi
 
 # ----- flag=v0 -----
 if [ x"$overlay_flag" == x"v0" ]; then
-	echo "restore downgrade status" > /dev/ttyS0
+	echo "****************************" > /dev/ttyS0
+	echo "* Restore downgrade status *" > /dev/ttyS0
+	echo "****************************" > /dev/ttyS0
 	rm -rf /overlayfs/v0
 	cp -ar /overlayfs/backup /overlayfs/v0
 	sync
@@ -56,7 +60,9 @@ fi
 
 # ----- flag=v3 -----
 if [ x"$overlay_flag" == x"v3" ]; then
-	echo "restore upgrade status" > /dev/ttyS0
+	echo "**************************" > /dev/ttyS0
+	echo "* Restore upgrade status *" > /dev/ttyS0
+	echo "**************************" > /dev/ttyS0
 	rm -rf /overlayfs/v0
 	cp -ar /overlayfs/backup /overlayfs/v0
 	sync
@@ -69,7 +75,9 @@ fi
 if [ x"$overlay_flag" == x"v1u" ]; then
 	rm -rf /overlayfs/backup
 	sync
-	echo "upgrade successful" > /dev/ttyS0
+	echo "**********************" > /dev/ttyS0
+	echo "* Upgrade successful *" > /dev/ttyS0
+	echo "**********************" > /dev/ttyS0
 	fw_setenv overlay_flag v1
 fi
 
@@ -77,16 +85,20 @@ fi
 if [ x"$overlay_flag" == x"v1d" ]; then
 	rm -rf /overlayfs/backup
 	sync
-	echo "downgrade successful" > /dev/ttyS0
+	echo "************************" > /dev/ttyS0
+	echo "* downgrade successful *" > /dev/ttyS0
+	echo "************************" > /dev/ttyS0
 	fw_setenv overlay_flag v1
 fi
 
 # ----- flag=default -----
 if [ x"$overlay_flag" == x"default" ]; then
 	rm -rf /overlayfs/v1
-	cp -ar /overlayfs/default /overlayfs/v1
+#	cp -ar /overlayfs/default /overlayfs/v1
 	sync
-	echo "set to default successful" > /dev/ttyS0
+	echo "*****************************" > /dev/ttyS0
+	echo "* Set to default successful *" > /dev/ttyS0
+	echo "*****************************" > /dev/ttyS0
 	fw_setenv overlay_flag v1
 fi
 

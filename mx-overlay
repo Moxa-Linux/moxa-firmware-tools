@@ -10,7 +10,6 @@ check_folder() {
 	local folder=${1}
 
 	if [ ! -d ${folder} ]; then
-		echo "${folder} does not exist. create it." >&2
 		mkdir -p ${folder}
         fi
 }
