@@ -25,7 +25,11 @@ ROOT_PART=$(dmesg | grep "Kernel command line")
 ROOT_PART="${ROOT_PART##*root=}"
 ROOT_PART="${ROOT_PART%% *}"
 ROOT_PART="${ROOT_PART%%2}3"
+
 # mount RFS partition3 to /overlayfs
+if [ ! -d /overlayfs ]; then
+	mkdir /overlayfs
+fi
 mount $ROOT_PART /overlayfs
 
 # ----- flag=v1backup -----
