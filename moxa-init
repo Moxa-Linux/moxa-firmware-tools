@@ -94,7 +94,9 @@ fi
 # ----- flag=default -----
 if [ x"$overlay_flag" == x"default" ]; then
 	rm -rf /overlayfs/v1
-#	cp -ar /overlayfs/default /overlayfs/v1
+	if [ -d /overlayfs/default ]; then
+		cp -ar /overlayfs/default /overlayfs/v1
+	fi
 	sync
 	echo "*****************************" > /dev/ttyS0
 	echo "* Set to default successful *" > /dev/ttyS0
