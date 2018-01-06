@@ -93,6 +93,8 @@ while read DIR; do
 	fi
 done < $READFILE
 
+mount -o remount,ro /
+
 # ----- Execute systemd -----
 exec /lib/systemd/systemd $@
 
