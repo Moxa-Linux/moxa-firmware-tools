@@ -7,10 +7,19 @@ KERNEL_PART="${KERNEL_PART##*root=}"
 KERNEL_PART="${KERNEL_PART%% *}"
 KERNEL_PART="${KERNEL_PART%%2}1"
 
+CFG_FILE="/etc/moxa-configs/moxa-firmware-tools.json"
+DOWNGRADE_FUNC="$(jq ".DOWNGRADE_FUNC" $CFG_FILE --raw-output)"
+
 downgrade(){
-	rm -rf /overlayfs/v1
-	cp -ar /overlayfs/v0 /overlayfs/v1
-	sync
+	if [ x"$DOWNGRADE_FUNC" != x"" ]; then
+		# run customized downgrade function
+		eval $DOWNGRADE_FUNC
+	else
+		# run default downgrade function
+		rm -rf /overlayfs/v1
+		cp -ar /overlayfs/v0 /overlayfs/v1
+		sync
+	fi
 }
 
 main(){

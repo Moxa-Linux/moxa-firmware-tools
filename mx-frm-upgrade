@@ -7,9 +7,18 @@ KERNEL_PART="${KERNEL_PART##*root=}"
 KERNEL_PART="${KERNEL_PART%% *}"
 KERNEL_PART="${KERNEL_PART%%2}1"
 
+CFG_FILE="/etc/moxa-configs/moxa-firmware-tools.json"
+UPGRADE_FUNC="$(jq ".UPGRADE_FUNC" $CFG_FILE --raw-output)"
+
 upgrade(){
-	apt-get upgrade
-	sync
+	if [ x"$UPGRADE_FUNC" != x"" ]; then
+		# run customized upgrade function
+		eval $UPGRADE_FUNC
+	else
+		# run default upgrade function
+		apt-get upgrade
+		sync
+	fi
 }
 
 main(){
