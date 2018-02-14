@@ -1,3 +1,13 @@
+moxa-firmware-tools (1.0.1+deb9) stretch; urgency=low
+
+  [ Harry YJ Jhou ]
+  * Add featrue: customized up/downgrade function
+
+  [ Fero JD Zhou ]
+  * Add mx-frm-tool
+
+ -- FeroJD Zhou <FeroJD.Zhou@moxa.com>  Wed, 14 Feb 2018 15:37:57 +0800
+
 moxa-firmware-tools (1.0.0+deb9) stretch; urgency=low
 
   [ Harry YJ Jhou ]
