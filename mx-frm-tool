@@ -25,9 +25,7 @@ frm_verify ()
 	check_file "$1"
 	local file="$1"
 	local output="$2"
-	if gpg --batch --yes --output "$output" --verify "$file"; then
-		exit $E_SUCCESS
-	else
+	if ! gpg --batch --yes --output "$output" --verify "$file"; then
 		exit $E_FAIL_WITH_VERIFICATION
 	fi
 }
@@ -38,9 +36,7 @@ frm_decrypt ()
 	check_file "$1"
 	local file="$1"
 	local output="$2"
-	if gpg --batch --yes --output "$output" --decrypt "$file"; then
-		exit $E_SUCCESS
-	else
+	if ! gpg --batch --yes --output "$output" --decrypt "$file"; then
 		exit $E_FAIL_WITH_DECRYPT
 	fi
 }
@@ -53,9 +49,7 @@ frm_magic_check ()
 	local magic_file="$1"
 	local check_script="$2"
 	./${check_script} ${magic_file}
-	if [ $? -eq 0 ]; then
-		exit $E_SUCCESS
-	else
+	if [ $? -ne 0 ]; then
 		exit $E_FAIL_WITH_MAGIC_CODE_CHECK
 	fi
 }
@@ -66,9 +60,7 @@ frm_upgrade ()
 	check_file "$1"
 	local upgrade_file="$1"
 	./$upgrade_file
-	if [ $? -eq 0 ]; then
-		exit $E_SUCCESS
-	else
+	if [ $? -ne 0 ]; then
 		exit $E_FAIL_WITH_UPGRADE
 	fi
 }
