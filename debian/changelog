@@ -1,3 +1,11 @@
+moxa-firmware-tools (1.0.2+deb9) stretch; urgency=medium
+
+  [ Wes Huang ]
+  * Increase overlayfs coverage.
+  * Fix the issue of creating /overlayfs folder if /overlayfs is already exist. 
+
+ -- Wes Huang <Wes.Huang@moxa.com>  Thu, 15 Mar 2018 18:42:49 +0800
+
 moxa-firmware-tools (1.0.1+deb9) stretch; urgency=low
 
   [ Harry YJ Jhou ]
