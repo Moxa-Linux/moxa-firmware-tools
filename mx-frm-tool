@@ -96,7 +96,7 @@ case "$CMD" in
 	;;
 	"-u")
 		# upgrade
-		frm_upgrade $FILE
+		frm_upgrade $FILE1
 	;;
 	*)
 		echo "Command: $CMD is not supported."
