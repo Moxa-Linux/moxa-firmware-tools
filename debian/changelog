@@ -1,3 +1,10 @@
+moxa-firmware-tools (1.0.3+deb9) stretch; urgency=medium
+
+  * Fix the wrong argument passed into frm_upgrade
+  * Remove the break out of shell switch case
+
+ -- FeroJD Zhou <FeroJD.Zhou@moxa.com>  Tue, 20 Mar 2018 15:22:44 +0800
+
 moxa-firmware-tools (1.0.2+deb9) stretch; urgency=medium
 
   [ Wes Huang ]
