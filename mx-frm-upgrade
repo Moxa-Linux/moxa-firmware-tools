@@ -10,14 +10,39 @@ KERNEL_PART="${KERNEL_PART%%2}1"
 CFG_FILE="/etc/moxa-configs/moxa-firmware-tools.json"
 UPGRADE_FUNC="$(jq ".UPGRADE_FUNC" $CFG_FILE --raw-output)"
 
+platform_upgrade(){
+	apt-get update
+	local BASE_SYSTEM_NAME="$(dpkg -l | grep base-system | awk '{print $2}')"
+	# check base-system package version
+	local ret="$(apt-get -s install $BASE_SYSTEM_NAME | grep 'packages will be installed')"
+	local DEP_PKG_PATH=""
+	if [ x"$ret" != x"" ]; then
+		apt-get install -y -d $BASE_SYSTEM_NAME
+		cp "$(ls /var/cache/apt/archives/*base-system* -S1 | head -n 1)" /overlayfs/v1_upgrade/
+		for pkg in $(apt-cache depends $BASE_SYSTEM_NAME | grep Depends | awk '{print $2}')
+		do
+			# dependen package path
+			DEP_PKG_PATH="$(ls /var/cache/apt/archives/${pkg}* -S1 | head -n 1)"
+			if [ -f "$DEP_PKG_PATH" ]; then
+				cp /var/cache/apt/archives/${pkg}* /overlayfs/v1_upgrade/
+			fi
+		done
+		cd /overlayfs/v1_upgrade/
+		apt-ftparchive packages . > Packages
+		apt-get install $BASE_SYSTEM_NAME
+		sync
+	else
+		echo "Platform is already the newest version"
+	fi
+}
+
 upgrade(){
 	if [ x"$UPGRADE_FUNC" != x"" ]; then
 		# run customized upgrade function
 		eval $UPGRADE_FUNC
 	else
-		# run default upgrade function
-		apt-get upgrade
-		sync
+		# run default platform upgrade function
+		platform_upgrade
 	fi
 }
 
@@ -32,11 +57,15 @@ main(){
 		umount ${KERNEL_PART}
 	fi
 	mount ${KERNEL_PART} ${TMP_RFS_P1}
-	cp -ar ${TMP_RFS_P1}/* ${OVERLAY_P1}/
+	cp -a ${TMP_RFS_P1}/* ${OVERLAY_P1}/
 	umount ${TMP_RFS_P1}
 
 	## backup v1
-	cp -ar /overlayfs/v1 /overlayfs/backup
+	rm -rf /overlayfs/v1.bak 2>&1>/dev/null
+	rm -rf /overlayfs/v1_upgrade.bak 2>&1>/dev/null
+	cp -a /overlayfs/v1 /overlayfs/v1.bak
+	cp -a /overlayfs/v1_upgrade /overlayfs/v1_upgrade.bak
+	rm -rf /overlayfs/v1_upgrade/*
 
 	# S2 state
 	sync
@@ -49,7 +78,9 @@ main(){
 
 	# S4 state
 	rm -rf /overlayfs/v0
-	cp -ar /overlayfs/backup /overlayfs/v0
+	rm -rf /overlayfs/v0_upgrade
+	cp -a /overlayfs/v1.bak /overlayfs/v0
+	cp -a /overlayfs/v1_upgrade.bak /overlayfs/v0_upgrade
 	sync
 	fw_setenv overlay_flag v1u
 
