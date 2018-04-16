@@ -8,7 +8,9 @@ KERNEL_PART="${KERNEL_PART%% *}"
 KERNEL_PART="${KERNEL_PART%%2}1"
 
 CFG_FILE="/etc/moxa-configs/moxa-firmware-tools.json"
-DOWNGRADE_FUNC="$(jq ".DOWNGRADE_FUNC" $CFG_FILE --raw-output)"
+if [ -f $CFG_FILE ]; then
+	DOWNGRADE_FUNC="$(jq ".DOWNGRADE_FUNC" $CFG_FILE --raw-output)"
+fi
 
 downgrade(){
 	if [ x"$DOWNGRADE_FUNC" != x"" ]; then
