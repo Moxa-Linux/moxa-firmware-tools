@@ -36,8 +36,8 @@ mount $ROOT_PART /overlayfs
 if [ x"$overlay_flag" == x"v1backup" ]; then
 	rm -rf /overlayfs/v1
 	rm -rf /overlayfs/v1_upgrade
-	cp -ar /overlayfs/v1.bak /overlayfs/v1
-	cp -ar /overlayfs/v1_upgrade.bak /overlayfs/v1_upgrade
+	cp -a /overlayfs/v1.bak /overlayfs/v1
+	cp -a /overlayfs/v1_upgrade.bak /overlayfs/v1_upgrade
 	sync
 	fw_setenv overlay_flag v1
 	echo "******************" > /dev/ttyS0
@@ -54,8 +54,8 @@ if [ x"$overlay_flag" == x"v0" ]; then
 	echo "****************************" > /dev/ttyS0
 	rm -rf /overlayfs/v0
 	rm -rf /overlayfs/v0_upgrade
-	cp -ar /overlayfs/v0.bak /overlayfs/v0
-	cp -ar /overlayfs/v0_upgrade.bak /overlayfs/v0_upgrade
+	cp -a /overlayfs/v0.bak /overlayfs/v0
+	cp -a /overlayfs/v0_upgrade.bak /overlayfs/v0_upgrade
 	sync
 	fw_setenv overlay_flag v1d
 	reboot
@@ -69,8 +69,8 @@ if [ x"$overlay_flag" == x"v3" ]; then
 	echo "**************************" > /dev/ttyS0
 	rm -rf /overlayfs/v0
 	rm -rf /overlayfs/v0_upgrade
-	cp -ar /overlayfs/v0.bak /overlayfs/v0
-	cp -ar /overlayfs/v0_upgrade.bak /overlayfs/v0_upgrade
+	cp -a /overlayfs/v0.bak /overlayfs/v0
+	cp -a /overlayfs/v0_upgrade.bak /overlayfs/v0_upgrade
 	sync
 	fw_setenv overlay_flag v1u
 	reboot
@@ -103,7 +103,7 @@ fi
 if [ x"$overlay_flag" == x"default" ]; then
 	rm -rf /overlayfs/v1
 	if [ -d /overlayfs/default ]; then
-		cp -ar /overlayfs/default /overlayfs/v1
+		cp -a /overlayfs/default /overlayfs/v1
 	fi
 	sync
 	echo "*****************************" > /dev/ttyS0
