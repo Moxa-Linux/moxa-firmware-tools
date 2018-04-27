@@ -2,7 +2,9 @@
 # This is a moxa-init loader
 # For moxa-init-main self upgrade
 ARGS="$@"
-UPGRADE_FILE="/overlayfs/moxa-init-main"
+MX_OVERLAY_UPGRADE_FILE="/overlayfs/mx-overlay"
+MX_OVERLAY_FILE="/sbin/mx-overlay"
+MOXA_INIT_UPGRADE_FILE="/overlayfs/moxa-init-main"
 MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
 
 mount -o remount,rw /
@@ -21,10 +23,17 @@ mount $ROOT_PART /overlayfs
 
 # check upgrade file & self upgrade
 self_upgrade () {
-	if [ -f "$UPGRADE_FILE" ]; then
-		echo "Found a new version of moxa-init, updating..."
-		mv "$UPGRADE_FILE" "$MOXA_INIT_MAIN_FILE"
-		echo "Update moxa-init successful"
+	# check mx-overlay
+	if [ -f "$MX_OVERLAY_UPGRADE_FILE" ]; then
+		echo "Found a new version of mx-overlay, updating..."
+		mv "$MX_OVERLAY_UPGRADE_FILE" "$MX_OVERLAY_FILE"
+		echo "Update mx-overlay successful"
+	fi
+	# check moxa-init-main
+	if [ -f "$MOXA_INIT_UPGRADE_FILE" ]; then
+		echo "Found a new version of moxa-init-main, updating..."
+		mv "$MOXA_INIT_UPGRADE_FILE" "$MOXA_INIT_MAIN_FILE"
+		echo "Update moxa-init-main successful"
 	fi
 }
 
