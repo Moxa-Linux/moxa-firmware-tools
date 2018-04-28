@@ -1,3 +1,9 @@
+moxa-firmware-tools (1.0.6+deb9) stretch; urgency=medium
+
+  * fix: add moxa-init-main into install file. 
+
+ -- Wes Huang <Wes.Huang@moxa.com>  Sat, 28 Apr 2018 15:55:24 +0800
+
 moxa-firmware-tools (1.0.5+deb9) stretch; urgency=medium
 
   [ Harry YJ Jhou ]
