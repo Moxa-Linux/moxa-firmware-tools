@@ -24,6 +24,9 @@ if [ x"$overlay_flag" == x"v1" ]; then
 	check_folder "${DIR}"
 	check_folder "/overlayfs/v1/${DIR}_rw/upper"
 	check_folder "/overlayfs/v1/${DIR}_rw/work"
+
+	# fix overlayfs copy on write incomplete issue.
+	rm -rf /overlayfs/v1/${DIR}_rw/work/*
 	
 	OPTS="-o lowerdir=${DIR},upperdir=/overlayfs/v1/${DIR}_rw/upper,workdir=/overlayfs/v1/${DIR}_rw/work"
 	/bin/mount -t overlay ${OPTS} overlay ${DIR}
