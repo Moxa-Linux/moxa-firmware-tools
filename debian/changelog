@@ -1,3 +1,9 @@
+moxa-firmware-tools (1.0.7+deb9) stretch; urgency=medium
+
+  * fix: overlayfs copy on write incomplete issue 
+
+ -- Wes Huang <Wes.Huang@moxa.com>  Fri, 11 May 2018 11:25:42 +0800
+
 moxa-firmware-tools (1.0.6+deb9) stretch; urgency=medium
 
   * fix: add moxa-init-main into install file. 
