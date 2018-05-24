@@ -7,6 +7,15 @@ MX_OVERLAY_FILE="/sbin/mx-overlay"
 MOXA_INIT_UPGRADE_FILE="/overlayfs/moxa-init-main"
 MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
 
+# loading overlay_fsck flag
+eval "$(fw_printenv|grep overlay_fsck)"
+
+# check overlay flag is exist or not
+if [ x"$overlay_fsck" == x"" ]; then
+        fw_setenv overlay_fsck y
+        overlay_fsck="y"
+fi
+
 mount -o remount,rw /
 
 # Get RFS partition from cmdline. e.g. /dev/mmcblk0p2
@@ -14,6 +23,11 @@ ROOT_PART=$(dmesg | grep "Kernel command line")
 ROOT_PART="${ROOT_PART##*root=}"
 ROOT_PART="${ROOT_PART%% *}"
 ROOT_PART="${ROOT_PART%%2}3"
+
+# check & fix overlay root file system
+if [ x"$overlay_fsck" == x"y" ]; then
+	fsck -f -y ${ROOT_PART}
+fi
 
 # mount RFS partition3 to /overlayfs
 if [ ! -d /overlayfs ]; then
