@@ -1,3 +1,9 @@
+moxa-firmware-tools (1.0.9+deb9) stretch; urgency=medium
+
+  * feat: support to upgrade moxa-init 
+
+ -- Wes Huang <Wes.Huang@moxa.com>  Fri, 01 Jun 2018 16:22:56 +0800
+
 moxa-firmware-tools (1.0.8+deb9) stretch; urgency=medium
 
   * Add check & fix overlay root file system feature
