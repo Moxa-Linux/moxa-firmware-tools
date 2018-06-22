@@ -8,8 +8,11 @@ KERNEL_PART="${KERNEL_PART%% *}"
 KERNEL_PART="${KERNEL_PART%%2}1"
 
 CFG_FILE="/etc/moxa-configs/moxa-firmware-tools.json"
+
+AUTO_REBOOT="yes"
 if [ -f $CFG_FILE ]; then
 	DOWNGRADE_FUNC="$(jq ".DOWNGRADE_FUNC" $CFG_FILE --raw-output)"
+	AUTO_REBOOT="$(jq ".AUTO_REBOOT" $CFG_FILE --raw-output)"
 fi
 
 downgrade(){
@@ -65,7 +68,13 @@ main(){
 	fw_setenv overlay_flag v1d
 
 	# S5 state
-	reboot
+	# reboot
+	if [ $AUTO_REBOOT = "no" ];
+	then
+		echo "Finish"
+	else
+		reboot
+	fi
 }
 
 main
