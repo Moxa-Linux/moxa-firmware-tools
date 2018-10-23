@@ -1,3 +1,9 @@
+moxa-firmware-tools (1.0.11+deb9) stretch; urgency=medium
+
+  * fix: mx-set-def should always use the base version kernel
+
+ -- Fero JD Zhou <FeroJD.Zhou@moxa.com>  Tue, 23 Oct 2018 14:19:36 +0800
+
 moxa-firmware-tools (1.0.10+deb9) stretch; urgency=medium
 
   * fix: hide the missing mtab message." 
