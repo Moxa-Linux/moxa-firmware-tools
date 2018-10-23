@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TMP_RFS_P1="/dev/shm/rfs_p1"
-OVERLAY_P1="/overlayfs/v1/p1"
+OVERLAY_P1="/overlayfs/base"
 
 KERNEL_PART=$(cat /proc/cmdline)
 KERNEL_PART="${KERNEL_PART##*root=}"
@@ -19,7 +19,8 @@ if [ -r ${OVERLAY_P1}/* ]; then
 		umount ${KERNEL_PART}
 	fi
 	mount ${KERNEL_PART} ${TMP_RFS_P1}
-	mv ${OVERLAY_P1}/* ${TMP_RFS_P1}/
+	cp ${OVERLAY_P1}/* ${TMP_RFS_P1}/
+	sync
 	umount ${KERNEL_PART}
 fi
 
