@@ -85,22 +85,18 @@ case "$CMD" in
 	"-v")
 		# verify
 		frm_verify $FILE1 $FILE2
-		break;
 	;;
 	"-d")
 		# decrypt
 		frm_decrypt $FILE1 $FILE2
-		break;
 	;;
 	"-c")
 		# magic check
 		frm_magic_check $FILE1 $FILE2
-		break;
 	;;
 	"-u")
 		# upgrade
-		frm_upgrade $FILE
-		break;
+		frm_upgrade $FILE1
 	;;
 	*)
 		echo "Command: $CMD is not supported."
