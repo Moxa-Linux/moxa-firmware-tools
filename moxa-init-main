@@ -30,81 +30,6 @@ if [ x"$overlay_flag" == x"debug" ]; then
 	exit
 fi
 
-# check v0_upgrade & v1_upgrade folder
-if [ ! -d /overlayfs/v0_upgrade ]; then
-	mkdir /overlayfs/v0_upgrade
-fi
-if [ ! -d /overlayfs/v1_upgrade ]; then
-	mkdir /overlayfs/v1_upgrade
-fi
-
-# ----- flag=v1backup -----
-if [ x"$overlay_flag" == x"v1backup" ]; then
-	rm -rf /overlayfs/v1
-	rm -rf /overlayfs/v1_upgrade
-	cp -a /overlayfs/v1.bak /overlayfs/v1
-	cp -a /overlayfs/v1_upgrade.bak /overlayfs/v1_upgrade
-	sync
-	fw_setenv overlay_flag v1
-	echo "******************" > /dev/ttyS0
-	echo "* Upgrade failed *" > /dev/ttyS0
-	echo "******************" > /dev/ttyS0
-	reboot
-	exit
-fi
-
-# ----- flag=v0 -----
-if [ x"$overlay_flag" == x"v0" ]; then
-	echo "****************************" > /dev/ttyS0
-	echo "* Restore downgrade status *" > /dev/ttyS0
-	echo "****************************" > /dev/ttyS0
-	rm -rf /overlayfs/v0
-	rm -rf /overlayfs/v0_upgrade
-	cp -a /overlayfs/v0.bak /overlayfs/v0
-	cp -a /overlayfs/v0_upgrade.bak /overlayfs/v0_upgrade
-	sync
-	fw_setenv overlay_flag v1d
-	reboot
-	exit
-fi
-
-# ----- flag=v3 -----
-if [ x"$overlay_flag" == x"v3" ]; then
-	echo "**************************" > /dev/ttyS0
-	echo "* Restore upgrade status *" > /dev/ttyS0
-	echo "**************************" > /dev/ttyS0
-	rm -rf /overlayfs/v0
-	rm -rf /overlayfs/v0_upgrade
-	cp -a /overlayfs/v0.bak /overlayfs/v0
-	cp -a /overlayfs/v0_upgrade.bak /overlayfs/v0_upgrade
-	sync
-	fw_setenv overlay_flag v1u
-	reboot
-	exit
-fi
-
-# ----- flag=v1u -----
-if [ x"$overlay_flag" == x"v1u" ]; then
-	rm -rf /overlayfs/v1.bak
-	rm -rf /overlayfs/v1_upgrade.bak
-	sync
-	echo "**********************" > /dev/ttyS0
-	echo "* Upgrade successful *" > /dev/ttyS0
-	echo "**********************" > /dev/ttyS0
-	fw_setenv overlay_flag v1
-fi
-
-# ----- flag=v1d -----
-if [ x"$overlay_flag" == x"v1d" ]; then
-	rm -rf /overlayfs/v0.bak
-	rm -rf /overlayfs/v0_upgrade.bak
-	sync
-	echo "************************" > /dev/ttyS0
-	echo "* downgrade successful *" > /dev/ttyS0
-	echo "************************" > /dev/ttyS0
-	fw_setenv overlay_flag v1
-fi
-
 # ----- flag=default -----
 if [ x"$overlay_flag" == x"default" ]; then
 	rm -rf /overlayfs/v1
@@ -124,32 +49,6 @@ while read DIR; do
 		/sbin/mx-overlay $DIR
 	fi
 done < $READFILE
-
-
-# ----- Check system version -----
-# It will upgrade firmware to current version
-# hen system detect local repo have available upgrade packages
-BASE_SYSTEM_NAME="$(dpkg -l | grep base-system | awk '{print $2}')"
-if [ x"$(ls /overlayfs/v1_upgrade/ | grep 'base-system')" != x"" ]; then
-	BASE_SYSTEM_UPGRADE_PKG="$(ls /overlayfs/v1_upgrade/*base-system* -S | head -n 1)"
-	CURRENT_VERSION="$(dpkg -l | grep 'base-system' | awk '{print $3}')"
-	UPGRADE_VERSION="$(dpkg-deb -f $BASE_SYSTEM_UPGRADE_PKG Version )"
-
-	dpkg --compare-versions "$UPGRADE_VERSION" "gt" "$CURRENT_VERSION"
-	if [ x"$?" == x"0" ]; then
-		echo "CURRENT VERSION:$CURRENT_VERSION" > /dev/ttyS0
-		echo "UPGRADE VERSION:$UPGRADE_VERSION" > /dev/ttyS0
-		declare -x PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-		cd /overlayfs/v1_upgrade/
-		apt-ftparchive packages . > Packages
-		echo "deb file:///overlayfs/v1_upgrade/ ./" > /etc/apt/sources.list.d/overlay_local_repo.list
-		apt-get update
-		apt-get --force-yes -y install $BASE_SYSTEM_NAME
-		echo "*****************************" > /dev/ttyS0
-		echo "* System update successful  *" > /dev/ttyS0
-		echo "*****************************" > /dev/ttyS0
-	fi
-fi
 
 mount -o remount,ro /
 
