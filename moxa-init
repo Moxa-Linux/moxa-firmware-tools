@@ -26,7 +26,8 @@ ROOT_PART="${ROOT_PART%%2}3"
 
 # check & fix overlay root file system
 if [ x"$overlay_fsck" == x"y" ]; then
-	fsck -f -y ${ROOT_PART}
+	# the missing mtab message is hidden because it is still not generated at this stage.
+	fsck -f -y ${ROOT_PART} 2>&1 | grep -v "missing mtab file"
 fi
 
 # mount RFS partition3 to /overlayfs
