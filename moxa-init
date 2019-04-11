@@ -8,7 +8,7 @@ MOXA_INIT_MAIN_UPGRADE_FILE="/overlayfs/moxa-init-main"
 MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
 
 # loading overlay_fsck flag
-eval "$(fw_printenv|grep overlay_fsck)"
+overlay_fsck="$(fw_printenv -n overlay_fsck)"
 
 # check overlay flag is exist or not
 if [ x"$overlay_fsck" == x"" ]; then
