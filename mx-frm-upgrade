@@ -1,12 +1,41 @@
 #!/bin/bash
 
+TMP_RFS_P1="/dev/shm/rfs_p1"
+OVERLAY_P1="/overlayfs/v1/p1"
+KERNEL_PART=$(cat /proc/cmdline)
+KERNEL_PART="${KERNEL_PART##*root=}"
+KERNEL_PART="${KERNEL_PART%% *}"
+KERNEL_PART="${KERNEL_PART%%2}1"
+
+CFG_FILE="/etc/moxa-configs/moxa-firmware-tools.json"
+UPGRADE_FUNC="$(jq ".UPGRADE_FUNC" $CFG_FILE --raw-output)"
+
 upgrade(){
-	apt-get upgrade
-	sync
+	if [ x"$UPGRADE_FUNC" != x"" ]; then
+		# run customized upgrade function
+		eval $UPGRADE_FUNC
+	else
+		# run default upgrade function
+		apt-get upgrade
+		sync
+	fi
 }
 
 main(){
 	# S1 state
+	## backup partition 1 kernel
+	mkdir -p ${TMP_RFS_P1}
+	mkdir -p ${OVERLAY_P1}
+
+	# if p1 is already mount, umount it.
+	if df -h | grep "${KERNEL_PART}" > /dev/null; then
+		umount ${KERNEL_PART}
+	fi
+	mount ${KERNEL_PART} ${TMP_RFS_P1}
+	cp -ar ${TMP_RFS_P1}/* ${OVERLAY_P1}/
+	umount ${TMP_RFS_P1}
+
+	## backup v1
 	cp -ar /overlayfs/v1 /overlayfs/backup
 
 	# S2 state
