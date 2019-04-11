@@ -1,3 +1,10 @@
+moxa-firmware-tools (1.0.5+deb9) stretch; urgency=medium
+
+  [ Harry YJ Jhou ]
+  * feat: add moxa-init loader for moxa-init-main & mx-overlay self upgrade
+
+ -- Harry YJ Jhou <HarryYJ.Jhou@moxa.com>  Sat, 28 Apr 2018 01:07:56 +0800
+
 moxa-firmware-tools (1.0.4+deb9) stretch; urgency=medium
 
   [ Harry YJ Jhou ]
