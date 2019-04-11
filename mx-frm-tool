@@ -58,7 +58,7 @@ frm_upgrade ()
 {
 	check_file "$1"
 	local upgrade_file="$1"
-	./$upgrade_file
+	sh $upgrade_file
 	if [ $? -ne 0 ]; then
 		exit ${E_FAIL_WITH_UPGRADE}$?
 	fi

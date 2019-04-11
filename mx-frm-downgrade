@@ -8,7 +8,9 @@ KERNEL_PART="${KERNEL_PART%% *}"
 KERNEL_PART="${KERNEL_PART%%2}1"
 
 CFG_FILE="/etc/moxa-configs/moxa-firmware-tools.json"
-DOWNGRADE_FUNC="$(jq ".DOWNGRADE_FUNC" $CFG_FILE --raw-output)"
+if [ -f $CFG_FILE ]; then
+	DOWNGRADE_FUNC="$(jq ".DOWNGRADE_FUNC" $CFG_FILE --raw-output)"
+fi
 
 downgrade(){
 	if [ x"$DOWNGRADE_FUNC" != x"" ]; then
@@ -17,7 +19,9 @@ downgrade(){
 	else
 		# run default downgrade function
 		rm -rf /overlayfs/v1
-		cp -ar /overlayfs/v0 /overlayfs/v1
+		rm -rf /overlayfs/v1_upgrade
+		cp -a /overlayfs/v0 /overlayfs/v1
+		cp -a /overlayfs/v0_upgrade /overlayfs/v1_upgrade
 		sync
 	fi
 }
@@ -33,10 +37,11 @@ main(){
 		umount ${KERNEL_PART}
 	fi
 	mount ${KERNEL_PART} ${TMP_RFS_P1}
-	cp -ar ${TMP_RFS_P1}/* ${OVERLAY_P1}/
+	cp -a ${TMP_RFS_P1}/* ${OVERLAY_P1}/
 
 	## backup v1
-	cp -ar /overlayfs/v1 /overlayfs/backup
+	cp -a /overlayfs/v1 /overlayfs/v1.bak
+	cp -a /overlayfs/v1_upgrade /overlayfs/v1_upgrade.bak
 
 	# S2 state
 	sync
@@ -52,8 +57,10 @@ main(){
 	mv /overlayfs/v0/p1/* ${TMP_RFS_P1}/
 	umount ${TMP_RFS_P1}
 	rm -rf /overlayfs/v0
+	rm -rf /overlayfs/v0_upgrade
 	## rollback v0
-	cp -ar /overlayfs/backup /overlayfs/v0
+	cp -a /overlayfs/v1.bak /overlayfs/v0
+	cp -a /overlayfs/v1_upgrade.bak /overlayfs/v0_upgrade
 	sync
 	fw_setenv overlay_flag v1d
 
