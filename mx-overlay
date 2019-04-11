@@ -11,7 +11,7 @@ check_folder() {
 
 	if [ ! -d ${folder} ]; then
 		mkdir -p ${folder}
-        fi
+	fi
 }
 
 # ----- flag=v1 -----

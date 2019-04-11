@@ -12,8 +12,8 @@ eval "$(fw_printenv|grep overlay_fsck)"
 
 # check overlay flag is exist or not
 if [ x"$overlay_fsck" == x"" ]; then
-        fw_setenv overlay_fsck y
-        overlay_fsck="y"
+	fw_setenv overlay_fsck y
+	overlay_fsck="y"
 fi
 
 mount -o remount,rw /
