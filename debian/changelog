@@ -1,0 +1,11 @@
+moxa-firmware-tools (1.0.0+deb9) stretch; urgency=low
+
+  [ Harry YJ Jhou ]
+  * Initial Release.
+
+  [ SZ Lin (林上智) ]
+  * Add uploader
+  * Add depends with u-boot-tools
+  * Rename this project to moxa-firmware-tools
+
+ -- SZ Lin (林上智) <sz.lin@moxa.com>  Sat, 23 Dec 2017 15:01:59 +0800

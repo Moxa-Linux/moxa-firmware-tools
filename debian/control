@@ -1,0 +1,15 @@
+Source: moxa-firmware-tools
+Section: utils
+Priority: required
+Maintainer: Harry YJ Jhou <HarryYJ.Jhou@moxa.com>
+Uploaders: SZ Lin (林上智) <sz.lin@moxa.com>
+Build-Depends: debhelper (>= 10), u-boot-tools
+Standards-Version: 4.1.2
+Homepage: https://www.moxa.com/
+
+Package: moxa-firmware-tools
+Architecture: all
+Depends: ${misc:Depends}, u-boot-tools
+Description: Set to default tool on Moxa industrial platform
+ Set the system back to its initial state or performing upgrade and downgrade
+ on the system.
