@@ -1,6 +1,19 @@
 #!/bin/bash
 
 READFILE="/etc/moxa-configs/moxa-firmware-tools.conf"
+MOXA_INIT_UPGRADE_FILE="/overlayfs/moxa-init"
+MOXA_INIT_FILE="/sbin/moxa-init"
+
+upgrade_moxa_init () {
+	# check moxa-init-main
+	if [ -f "$MOXA_INIT_UPGRADE_FILE" ]; then
+		echo "Found a new version of moxa-init, updating..."
+		mv "$MOXA_INIT_UPGRADE_FILE" "$MOXA_INIT_FILE"
+		echo "Update moxa-init successful"
+	fi
+}
+
+upgrade_moxa_init
 
 # get flag from spi flash
 eval "$(fw_printenv|grep overlay_flag)"
