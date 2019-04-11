@@ -20,7 +20,7 @@ set -e
 
 case "$1" in
 	configure)
-		mkdir /overlayfs
+		mkdir -p /overlayfs
 		sync
 	;;
 
