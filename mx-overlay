@@ -4,18 +4,18 @@
 DIR="$1"
 
 # get flag from spi flash
-eval "$(fw_printenv|grep overlay_flag)"
+overlay_flag="$(fw_printenv -n overlay_flag)"
 
 check_folder() {
 	local folder=${1}
 
 	if [ ! -d ${folder} ]; then
 		mkdir -p ${folder}
-        fi
+	fi
 }
 
 # ----- flag=v1 -----
-if [ x"$overlay_flag" == x"v1" ]; then
+if [ "${overlay_flag}" == "v1" ]; then
 	if [ -d "/overlayfs/backup" ]; then
 		rm -rf "/overlayfs/backup"
 	fi
