@@ -1,3 +1,10 @@
+moxa-firmware-tools (1.1.0+deb9) stretch; urgency=medium
+
+  * refactor: remove upgrade & downgrade features
+  * fix: refine scripts
+
+ -- Ken CJ Chou <KenCJ.Chou@moxa.com>  Fri, 12 Apr 2019 18:57:14 +0800
+
 moxa-firmware-tools (1.0.11+deb9) stretch; urgency=medium
 
   * fix: mx-set-def should always use the base version kernel
