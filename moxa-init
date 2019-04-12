@@ -8,12 +8,12 @@ MOXA_INIT_MAIN_UPGRADE_FILE="/overlayfs/moxa-init-main"
 MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
 
 # loading overlay_fsck flag
-eval "$(fw_printenv|grep overlay_fsck)"
+overlay_fsck="$(fw_printenv -n overlay_fsck)"
 
 # check overlay flag is exist or not
-if [ x"$overlay_fsck" == x"" ]; then
-        fw_setenv overlay_fsck y
-        overlay_fsck="y"
+if [ "${overlay_fsck}" == "" ]; then
+	fw_setenv overlay_fsck y
+	overlay_fsck="y"
 fi
 
 mount -o remount,rw /
@@ -25,7 +25,7 @@ ROOT_PART="${ROOT_PART%% *}"
 ROOT_PART="${ROOT_PART%%2}3"
 
 # check & fix overlay root file system
-if [ x"$overlay_fsck" == x"y" ]; then
+if [ "${overlay_fsck}" == "y" ]; then
 	# the missing mtab message is hidden because it is still not generated at this stage.
 	fsck -f -y ${ROOT_PART} 2>&1 | grep -v "missing mtab file"
 fi
