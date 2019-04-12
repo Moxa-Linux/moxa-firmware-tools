@@ -1,4 +1,5 @@
-mx* /sbin/
+mx-overlay /sbin/
+mx-set-def /sbin/
 moxa-init /sbin/
 moxa-init-main /sbin/
 moxa-firmware-tools.conf /etc/moxa-configs/
