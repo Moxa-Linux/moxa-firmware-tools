@@ -15,7 +15,7 @@ check_folder() {
 }
 
 # ----- flag=v1 -----
-if [ x"$overlay_flag" == x"v1" ]; then
+if [ "${overlay_flag}" == "v1" ]; then
 	if [ -d "/overlayfs/backup" ]; then
 		rm -rf "/overlayfs/backup"
 	fi

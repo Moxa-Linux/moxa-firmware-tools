@@ -19,19 +19,19 @@ upgrade_moxa_init
 overlay_flag="$(fw_printenv -n overlay_flag)"
 
 # check overlay flag is exist or not
-if [ x"$overlay_flag" == x"" ]; then
+if [ "${overlay_flag}" == "" ]; then
 	fw_setenv overlay_flag v1
 	overlay_flag="v1"
 fi
 
 # Engineer debug mode
-if [ x"$overlay_flag" == x"debug" ]; then
+if [ "{$overlay_flag}" == "debug" ]; then
 	exec /lib/systemd/systemd $@
 	exit
 fi
 
 # ----- flag=default -----
-if [ x"$overlay_flag" == x"default" ]; then
+if [ "${overlay_flag}" == "default" ]; then
 	rm -rf /overlayfs/v1
 	if [ -d /overlayfs/default ]; then
 		cp -a /overlayfs/default /overlayfs/v1
@@ -45,7 +45,7 @@ fi
 
 # ----- Run overlayfs -----
 while read DIR; do
-	if [ x"${DIR:0:1}" != x"#" ]&&[ x"${DIR:0:1}" != x"" ] ; then
+	if [ "${DIR:0:1}" != "#" ] && [ "${DIR:0:1}" != "" ] ; then
 		/sbin/mx-overlay $DIR
 	fi
 done < $READFILE
