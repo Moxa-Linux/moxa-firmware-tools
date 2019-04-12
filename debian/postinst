@@ -19,32 +19,32 @@ set -e
 
 
 case "$1" in
-	configure)
-		mkdir -p /overlayfs
-		sync
-		# for moxa-init-main & mx-overlay self upgrade
-		MX_OVERLAY_FILE="/sbin/mx-overlay"
-		MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
-		MOXA_INIT_FILE="/sbin/moxa-init"
-		OVERLAY_PATH="/overlayfs/"
+configure)
+	mkdir -p /overlayfs
+	sync
+	# for moxa-init-main & mx-overlay self upgrade
+	MX_OVERLAY_FILE="/sbin/mx-overlay"
+	MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
+	MOXA_INIT_FILE="/sbin/moxa-init"
+	OVERLAY_PATH="/overlayfs/"
 
-		# Check the environment is in VM or physical target machine.
-		if cat /proc/cmdline | grep mmcblk > /dev/null; then
-			cp $MX_OVERLAY_FILE $OVERLAY_PATH
-			cp $MOXA_INIT_MAIN_FILE $OVERLAY_PATH
-			cp $MOXA_INIT_FILE $OVERLAY_PATH
-		fi
+	# Check the environment is in VM or physical target machine.
+	if cat /proc/cmdline | grep -q "mmcblk"; then
+		cp $MX_OVERLAY_FILE $OVERLAY_PATH
+		cp $MOXA_INIT_MAIN_FILE $OVERLAY_PATH
+		cp $MOXA_INIT_FILE $OVERLAY_PATH
+	fi
 	;;
 
-	abort-upgrade|abort-remove|abort-deconfigure)
-		rm /overlayfs -rf
-		sync
-    ;;
+abort-upgrade|abort-remove|abort-deconfigure)
+	rm /overlayfs -rf
+	sync
+	;;
 
-    *)
-        echo "postinst called with unknown argument \`$1'" >&2
-        exit 1
-    ;;
+*)
+	echo "postinst called with unknown argument \`$1'" >&2
+	exit 1
+	;;
 esac
 
 # dh_installdeb will replace this with shell code automatically
