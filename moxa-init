@@ -7,15 +7,6 @@ MX_OVERLAY_FILE="/sbin/mx-overlay"
 MOXA_INIT_MAIN_UPGRADE_FILE="/overlayfs/moxa-init-main"
 MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
 
-# loading overlay_fsck flag
-overlay_fsck="$(fw_printenv -n overlay_fsck)"
-
-# check overlay flag is exist or not
-if [ "${overlay_fsck}" == "" ]; then
-	fw_setenv overlay_fsck y
-	overlay_fsck="y"
-fi
-
 mount -o remount,rw /
 
 # Get RFS partition from cmdline. e.g. /dev/mmcblk0p2
@@ -25,10 +16,8 @@ ROOT_PART="${ROOT_PART%% *}"
 ROOT_PART="${ROOT_PART%%2}3"
 
 # check & fix overlay root file system
-if [ "${overlay_fsck}" == "y" ]; then
-	# the missing mtab message is hidden because it is still not generated at this stage.
-	fsck -f -y ${ROOT_PART} 2>&1 | grep -v "missing mtab file"
-fi
+# the missing mtab message is hidden because it is still not generated at this stage.
+fsck -f -y ${ROOT_PART} 2>&1 | grep -v "missing mtab file"
 
 # mount RFS partition3 to /overlayfs
 if [ ! -d /overlayfs ]; then
