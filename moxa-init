@@ -27,16 +27,13 @@ mount $ROOT_PART /overlayfs
 
 # check upgrade file & self upgrade
 self_upgrade () {
-	# check mx-overlay
-	if [ -f "$MX_OVERLAY_UPGRADE_FILE" ]; then
-		echo "Found a new version of mx-overlay, updating..."
-		mv "$MX_OVERLAY_UPGRADE_FILE" "$MX_OVERLAY_FILE"
-		echo "Update mx-overlay successful"
-	fi
+	# remove unnecessary files from lower
+	rm -f /sbin/mx-overlay /sbin/mx-frm-tool /sbin/mx-frm-upgrade /sbin/mx-frm-downgrade
+
 	# check moxa-init-main
-	if [ -f "$MOXA_INIT_MAIN_UPGRADE_FILE" ]; then
+	if [ -f /overlayfs/moxa-init-main ]; then
 		echo "Found a new version of moxa-init-main, updating..."
-		mv "$MOXA_INIT_MAIN_UPGRADE_FILE" "$MOXA_INIT_MAIN_FILE"
+		mv /overlayfs/moxa-init-main /sbin/moxa-init-main
 		echo "Update moxa-init-main successful"
 	fi
 }
