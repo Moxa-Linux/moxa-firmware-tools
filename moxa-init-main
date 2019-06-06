@@ -13,6 +13,18 @@ upgrade_moxa_init () {
 	fi
 }
 
+mount_overlay() {
+	local dir="${1}"
+	local upper="/overlayfs/v1/${dir}_rw/upper"
+	local work="/overlayfs/v1/${dir}_rw/work"
+
+	mkdir -p "${dir}"
+	mkdir -p "${upper}"
+	mkdir -p "${work}"
+	rm -rf ${work}/*
+	/bin/mount -t overlay -o lowerdir=${dir},upperdir=${upper},workdir=${work} overlay ${dir}
+}
+
 upgrade_moxa_init
 
 # get flag from spi flash
@@ -42,11 +54,17 @@ if [ "${overlay_flag}" == "default" ]; then
 fi
 
 # ----- Run overlayfs -----
-while read DIR; do
-	if [ "${DIR:0:1}" != "#" ] && [ "${DIR:0:1}" != "" ] ; then
-		/sbin/mx-overlay $DIR
+if [ "${overlay_flag}" == "v1" ]; then
+	if [ -d "/overlayfs/backup" ]; then
+		rm -rf "/overlayfs/backup"
 	fi
-done < $READFILE
+
+	while read DIR; do
+		if [ "${DIR:0:1}" != "#" ] && [ "${DIR:0:1}" != "" ] ; then
+			mount_overlay ${DIR}
+		fi
+	done < $READFILE
+fi
 
 mount -o remount,ro /
 
