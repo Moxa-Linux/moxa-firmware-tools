@@ -1,11 +1,6 @@
 #!/bin/bash
 # This is a moxa-init loader
 # For moxa-init-main self upgrade
-ARGS="$@"
-MX_OVERLAY_UPGRADE_FILE="/overlayfs/mx-overlay"
-MX_OVERLAY_FILE="/sbin/mx-overlay"
-MOXA_INIT_MAIN_UPGRADE_FILE="/overlayfs/moxa-init-main"
-MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
 
 mount -o remount,rw /
 
@@ -20,13 +15,11 @@ ROOT_PART="${ROOT_PART%%2}3"
 fsck -f -y ${ROOT_PART} 2>&1 | grep -v "missing mtab file"
 
 # mount RFS partition3 to /overlayfs
-if [ ! -d /overlayfs ]; then
-	mkdir /overlayfs
-fi
-mount $ROOT_PART /overlayfs
+mkdir -p /overlayfs
+mount ${ROOT_PART} /overlayfs
 
 # check upgrade file & self upgrade
-self_upgrade () {
+self_upgrade() {
 	# remove unnecessary files from lower
 	rm -f /sbin/mx-overlay /sbin/mx-frm-tool /sbin/mx-frm-upgrade /sbin/mx-frm-downgrade
 
@@ -38,10 +31,5 @@ self_upgrade () {
 	fi
 }
 
-# main function
-main(){
-	exec $MOXA_INIT_MAIN_FILE $ARGS
-}
-
 self_upgrade
-main
+exec /sbin/moxa-init-main "$@"
