@@ -16,9 +16,7 @@ upgrade_moxa_init () {
 upgrade_moxa_init
 
 # get flag from spi flash
-overlay_flag="$(fw_printenv -n overlay_flag)"
-
-# check overlay flag is exist or not
+overlay_flag="$(fw_printenv -n overlay_flag 2>/dev/null)"
 if [ "${overlay_flag}" == "" ]; then
 	fw_setenv overlay_flag v1
 	overlay_flag="v1"
