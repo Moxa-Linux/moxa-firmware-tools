@@ -1,20 +1,6 @@
 #!/bin/bash
 # This is a moxa-init loader
 # For moxa-init-main self upgrade
-ARGS="$@"
-MX_OVERLAY_UPGRADE_FILE="/overlayfs/mx-overlay"
-MX_OVERLAY_FILE="/sbin/mx-overlay"
-MOXA_INIT_MAIN_UPGRADE_FILE="/overlayfs/moxa-init-main"
-MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
-
-# loading overlay_fsck flag
-overlay_fsck="$(fw_printenv -n overlay_fsck)"
-
-# check overlay flag is exist or not
-if [ "${overlay_fsck}" == "" ]; then
-	fw_setenv overlay_fsck y
-	overlay_fsck="y"
-fi
 
 mount -o remount,rw /
 
@@ -22,40 +8,28 @@ mount -o remount,rw /
 ROOT_PART=$(dmesg | grep "Kernel command line")
 ROOT_PART="${ROOT_PART##*root=}"
 ROOT_PART="${ROOT_PART%% *}"
-ROOT_PART="${ROOT_PART%%2}3"
+UPPER_PART="${ROOT_PART%%2}3"
 
 # check & fix overlay root file system
-if [ "${overlay_fsck}" == "y" ]; then
-	# the missing mtab message is hidden because it is still not generated at this stage.
-	fsck -f -y ${ROOT_PART} 2>&1 | grep -v "missing mtab file"
-fi
+# the missing mtab message is hidden because it is still not generated at this stage.
+fsck -f -y ${UPPER_PART} 2>&1 | grep -v "missing mtab file"
 
 # mount RFS partition3 to /overlayfs
-if [ ! -d /overlayfs ]; then
-	mkdir /overlayfs
-fi
-mount $ROOT_PART /overlayfs
+mkdir -p /overlayfs
+mount ${UPPER_PART} /overlayfs
 
 # check upgrade file & self upgrade
-self_upgrade () {
-	# check mx-overlay
-	if [ -f "$MX_OVERLAY_UPGRADE_FILE" ]; then
-		echo "Found a new version of mx-overlay, updating..."
-		mv "$MX_OVERLAY_UPGRADE_FILE" "$MX_OVERLAY_FILE"
-		echo "Update mx-overlay successful"
-	fi
+self_upgrade() {
+	# remove unnecessary files from lower
+	rm -f /sbin/mx-overlay /sbin/mx-frm-tool /sbin/mx-frm-upgrade /sbin/mx-frm-downgrade
+
 	# check moxa-init-main
-	if [ -f "$MOXA_INIT_MAIN_UPGRADE_FILE" ]; then
+	if [ -f /overlayfs/moxa-init-main ]; then
 		echo "Found a new version of moxa-init-main, updating..."
-		mv "$MOXA_INIT_MAIN_UPGRADE_FILE" "$MOXA_INIT_MAIN_FILE"
+		mv /overlayfs/moxa-init-main /sbin/moxa-init-main
 		echo "Update moxa-init-main successful"
 	fi
 }
 
-# main function
-main(){
-	exec $MOXA_INIT_MAIN_FILE $ARGS
-}
-
 self_upgrade
-main
+exec /sbin/moxa-init-main "$@"
