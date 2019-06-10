@@ -8,15 +8,15 @@ mount -o remount,rw /
 ROOT_PART=$(dmesg | grep "Kernel command line")
 ROOT_PART="${ROOT_PART##*root=}"
 ROOT_PART="${ROOT_PART%% *}"
-ROOT_PART="${ROOT_PART%%2}3"
+UPPER_PART="${ROOT_PART%%2}3"
 
 # check & fix overlay root file system
 # the missing mtab message is hidden because it is still not generated at this stage.
-fsck -f -y ${ROOT_PART} 2>&1 | grep -v "missing mtab file"
+fsck -f -y ${UPPER_PART} 2>&1 | grep -v "missing mtab file"
 
 # mount RFS partition3 to /overlayfs
 mkdir -p /overlayfs
-mount ${ROOT_PART} /overlayfs
+mount ${UPPER_PART} /overlayfs
 
 # check upgrade file & self upgrade
 self_upgrade() {
