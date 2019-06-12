@@ -1,4 +1,3 @@
-mx-overlay /sbin/
 mx-set-def /sbin/
 moxa-init /sbin/
 moxa-init-main /sbin/

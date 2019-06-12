@@ -22,17 +22,12 @@ case "$1" in
 configure)
 	mkdir -p /overlayfs
 	sync
-	# for moxa-init-main & mx-overlay self upgrade
-	MX_OVERLAY_FILE="/sbin/mx-overlay"
-	MOXA_INIT_MAIN_FILE="/sbin/moxa-init-main"
-	MOXA_INIT_FILE="/sbin/moxa-init"
-	OVERLAY_PATH="/overlayfs/"
 
+	# for moxa-init-main & mx-overlay self upgrade
 	# Check the environment is in VM or physical target machine.
 	if cat /proc/cmdline | grep -q "mmcblk"; then
-		cp $MX_OVERLAY_FILE $OVERLAY_PATH
-		cp $MOXA_INIT_MAIN_FILE $OVERLAY_PATH
-		cp $MOXA_INIT_FILE $OVERLAY_PATH
+		cp /sbin/moxa-init-main /overlayfs/
+		cp /sbin/moxa-init /overlayfs/
 	fi
 	;;
 
