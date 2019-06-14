@@ -1,3 +1,12 @@
+moxa-firmware-tools (1.1.1+deb9) stretch; urgency=medium
+
+  * fix: always do fsck
+  * fix: avoid error message for fw_printenv
+  * refactor: merge `mx-overlay` into `moxa-init-main`
+  * refactor: remove unnecessary files from lower
+
+ -- Ken CJ Chou <KenCJ.Chou@moxa.com>  Wed, 12 Jun 2019 15:39:43 +0800
+
 moxa-firmware-tools (1.1.0+deb9) stretch; urgency=medium
 
   * refactor: remove upgrade & downgrade features

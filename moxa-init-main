@@ -1,24 +1,32 @@
 #!/bin/bash
 
 READFILE="/etc/moxa-configs/moxa-firmware-tools.conf"
-MOXA_INIT_UPGRADE_FILE="/overlayfs/moxa-init"
-MOXA_INIT_FILE="/sbin/moxa-init"
 
-upgrade_moxa_init () {
+upgrade_moxa_init() {
 	# check moxa-init-main
-	if [ -f "$MOXA_INIT_UPGRADE_FILE" ]; then
+	if [ -f /overlayfs/moxa-init ]; then
 		echo "Found a new version of moxa-init, updating..."
-		mv "$MOXA_INIT_UPGRADE_FILE" "$MOXA_INIT_FILE"
+		mv /overlayfs/moxa-init /sbin/moxa-init
 		echo "Update moxa-init successful"
 	fi
+}
+
+mount_overlay() {
+	local dir="${1}"
+	local upper="/overlayfs/v1/${dir}_rw/upper"
+	local work="/overlayfs/v1/${dir}_rw/work"
+
+	mkdir -p "${dir}"
+	mkdir -p "${upper}"
+	mkdir -p "${work}"
+	rm -rf ${work}/*
+	/bin/mount -t overlay -o lowerdir=${dir},upperdir=${upper},workdir=${work} overlay ${dir}
 }
 
 upgrade_moxa_init
 
 # get flag from spi flash
-overlay_flag="$(fw_printenv -n overlay_flag)"
-
-# check overlay flag is exist or not
+overlay_flag="$(fw_printenv -n overlay_flag 2>/dev/null)"
 if [ "${overlay_flag}" == "" ]; then
 	fw_setenv overlay_flag v1
 	overlay_flag="v1"
@@ -27,7 +35,6 @@ fi
 # Engineer debug mode
 if [ "{$overlay_flag}" == "debug" ]; then
 	exec /lib/systemd/systemd $@
-	exit
 fi
 
 # ----- flag=default -----
@@ -37,21 +44,28 @@ if [ "${overlay_flag}" == "default" ]; then
 		cp -a /overlayfs/default /overlayfs/v1
 	fi
 	sync
-	echo "*****************************" > /dev/ttyS0
-	echo "* Set to default successful *" > /dev/ttyS0
-	echo "*****************************" > /dev/ttyS0
+	{
+		echo "*****************************"
+		echo "* Set to default successful *"
+		echo "*****************************"
+	} > /dev/ttyS0
 	fw_setenv overlay_flag v1
 fi
 
 # ----- Run overlayfs -----
-while read DIR; do
-	if [ "${DIR:0:1}" != "#" ] && [ "${DIR:0:1}" != "" ] ; then
-		/sbin/mx-overlay $DIR
+if [ "${overlay_flag}" == "v1" ]; then
+	if [ -d "/overlayfs/backup" ]; then
+		rm -rf "/overlayfs/backup"
 	fi
-done < $READFILE
+
+	while read DIR; do
+		if [ "${DIR:0:1}" != "#" ] && [ "${DIR:0:1}" != "" ] ; then
+			mount_overlay ${DIR}
+		fi
+	done < ${READFILE}
+fi
 
 mount -o remount,ro /
 
 # ----- Execute systemd -----
 exec /lib/systemd/systemd $@
-

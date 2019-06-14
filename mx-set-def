@@ -15,7 +15,7 @@ mkdir -p ${OVERLAY_P1}
 # restore p1 if p1 backup files are exist
 if [ -r ${OVERLAY_P1}/* ]; then
 	# if p1 is already mount, umount it.
-	if df -h | grep "${KERNEL_PART}" > /dev/null; then
+	if df -h | grep -q "${KERNEL_PART}"; then
 		umount ${KERNEL_PART}
 	fi
 	mount ${KERNEL_PART} ${TMP_RFS_P1}
@@ -27,4 +27,3 @@ fi
 # prepare to set to default root file system
 fw_setenv overlay_flag default
 reboot
-
