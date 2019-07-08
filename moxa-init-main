@@ -50,6 +50,7 @@ if [ "${overlay_flag}" == "default" ]; then
 		echo "*****************************"
 	} > /dev/ttyS0
 	fw_setenv overlay_flag v1
+	overlay_flag="v1"
 fi
 
 # ----- Run overlayfs -----
