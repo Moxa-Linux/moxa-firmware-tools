@@ -1,3 +1,9 @@
+moxa-firmware-tools (1.1.2+deb9) stretch; urgency=medium
+
+  * fix: overlayfs not mounted after set to default
+
+ -- Ken CJ Chou <KenCJ.Chou@moxa.com>  Mon, 8 Jul 2019 18:08:54 +0800
+
 moxa-firmware-tools (1.1.1+deb9) stretch; urgency=medium
 
   * fix: always do fsck
