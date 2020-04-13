@@ -13,7 +13,7 @@ mkdir -p ${TMP_RFS_P1}
 mkdir -p ${OVERLAY_P1}
 
 # restore p1 if p1 backup files are exist
-if [ -r ${OVERLAY_P1}/* ]; then
+if [ -n "$(ls -A ${OVERLAY_P1})" ]; then
 	# if p1 is already mount, umount it.
 	if df -h | grep -q "${KERNEL_PART}"; then
 		umount ${KERNEL_PART}
