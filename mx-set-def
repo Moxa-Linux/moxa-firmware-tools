@@ -14,6 +14,13 @@ mkdir -p ${OVERLAY_P1}
 
 # restore p1 if p1 backup files are exist
 if [ -n "$(ls -A ${OVERLAY_P1})" ]; then
+	# Due to the improper operation on an image generation,
+	# the folder 'lost+found' exists under OVERLAY_P1.
+	# Remove it if found.
+	if [ -d "${OVERLAY_P1}/lost+found" ]; then
+		rm -rf "${OVERLAY_P1}/lost+found"
+	fi
+
 	# if p1 is already mount, umount it.
 	if df -h | grep -q "${KERNEL_PART}"; then
 		umount ${KERNEL_PART}
